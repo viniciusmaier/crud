@@ -1,16 +1,17 @@
-import { ProductsRepository } from 'src/infra/repository/products.repository';
 import { ProductDto } from './dtos/product.dto';
 import { plainToInstance } from 'class-transformer';
-import { ProductsEntity } from 'src/core/entities/products.entity';
+import { Products } from 'src/core/entities/products.entity';
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { IProductsRepository } from 'src/core/interfaces/repositories/products.interface';
 
 @Injectable()
 export class CreatedProductsUseCase {
-  constructor(private readonly repository: ProductsRepository) {}
+  constructor(private readonly repository: IProductsRepository) {}
 
-  execute(user: ProductDto) {
-    if (!user.barcode) throw new Error();
+  execute(prod: ProductDto) {
+    if (!prod.barcode) throw new Error();
 
-    return this.repository.save(user);
+    return this.repository.save(plainToInstance(Products, prod));
   }
 }
